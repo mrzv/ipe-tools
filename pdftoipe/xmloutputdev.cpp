@@ -149,15 +149,14 @@ void XmlOutputDev::stroke(GfxState *state)
   writeColor("<path stroke=", rgb, 0);
   writePSFmt(" pen=\"%g\"", state->getTransformedLineWidth());
 
-  double *dash;
   double start;
-  int length, i;
-
-  state->getLineDash(&dash, &length, &start);
+  std::vector<double> dash = state->getLineDash(&start);
+  int length = dash.size();
+  int i;
   if (length) {
     writePS(" dash=\"[");
     for (i = 0; i < length; ++i)
-      writePSFmt("%g%s", state->transformWidth(dash[i]), 
+      writePSFmt("%g%s", state->transformWidth(dash.at(i)), 
 		 (i == length-1) ? "" : " ");
     writePSFmt("] %g\"", state->transformWidth(start));
   }
